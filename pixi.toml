@@ -1,0 +1,15 @@
+[workspace]
+authors = ["pylyz"]
+channels = ["conda-forge"]
+name = "word-mcp"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+start = "python -m word_mcp.server"
+
+[dependencies]
+python = "3.12.*"
+
+[pypi-dependencies]
+word-mcp = { path = ".", editable = true }

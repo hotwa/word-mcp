@@ -24,21 +24,71 @@ This server:
 
 ### Install
 
-#### 1. Clone the repo:
+#### 1. Clone your fork:
 ```bash
-git clone https://github.com/juanocampo400/word-mcp.git
+git clone https://github.com/hotwa/word-mcp.git
 cd word-mcp
 ```
 
-#### 2. Install dependencies:
-```bash
-pip install -e .
+#### 2. Prepare pixi on your Windows machine
+
+If you do not already have `pixi`, install it first:
+
+```powershell
+winget install prefix-dev.pixi
 ```
 
-#### 3. Add to Claude Code:
+Confirm it is available:
 
 ```bash
-claude mcp add word-mcp --scope user -- python -m word_mcp.server
+pixi --version
+```
+
+#### 3. Create the local pixi environment
+
+From the repository root:
+
+```bash
+pixi install
+```
+
+This creates the project environment and installs `word-mcp` in editable mode from the local checkout.
+
+#### 4. Start the MCP server locally
+
+```bash
+pixi run start
+```
+
+This starts the stdio MCP server with the environment defined in `pixi.toml`.
+
+#### 5. Add to Codex
+
+Use an absolute `--manifest-path` so Codex can start the server from any directory:
+
+```bash
+codex mcp add word-mcp -- pixi run --manifest-path C:/path/to/word-mcp start
+```
+
+For example:
+
+```bash
+codex mcp add word-mcp -- pixi run --manifest-path C:/Users/pylyz/Documents/project/word-mcp start
+```
+
+Check the saved configuration with:
+
+```bash
+codex mcp list
+codex mcp get word-mcp --json
+```
+
+#### 6. Add to Claude Code
+
+If you also want to use the server in Claude Code:
+
+```bash
+claude mcp add word-mcp --scope user -- pixi run --manifest-path C:/path/to/word-mcp start
 ```
 
 <details>
@@ -53,22 +103,13 @@ claude mcp add word-mcp --scope user -- python -m word_mcp.server
   "mcpServers": {
     "word-mcp": {
       "type": "stdio",
-      "command": "python",
-      "args": ["-m", "word_mcp.server"]
-    }
-  }
-}
-```
-
-If `python` doesn't resolve, use the full path:
-
-```json
-{
-  "mcpServers": {
-    "word-mcp": {
-      "type": "stdio",
-      "command": "C:/Users/yourname/AppData/Local/Programs/Python/Python312/python.exe",
-      "args": ["-m", "word_mcp.server"]
+      "command": "pixi",
+      "args": [
+        "run",
+        "--manifest-path",
+        "C:/path/to/word-mcp",
+        "start"
+      ]
     }
   }
 }
