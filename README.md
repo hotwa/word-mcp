@@ -1,6 +1,6 @@
 # Word MCP Server
 
-Edit Word documents with Claude with full tracked changes support.
+Edit local Word documents from Codex or Claude Code with full tracked changes support.
 
 ## Why This Exists
 
@@ -20,7 +20,7 @@ This server:
 ### Prerequisites
 
 - **Windows** with **Microsoft Word** installed (required for COM-based tracked changes)
-- **Python 3.10+** – Check with `python --version`
+- **pixi** for environment management
 
 ### Install
 
@@ -30,7 +30,7 @@ git clone https://github.com/hotwa/word-mcp.git
 cd word-mcp
 ```
 
-#### 2. Prepare pixi on your Windows machine
+#### 2. Install pixi
 
 If you do not already have `pixi`, install it first:
 
@@ -53,6 +53,8 @@ pixi install
 ```
 
 This creates the project environment and installs `word-mcp` in editable mode from the local checkout.
+
+The repository already includes [`pixi.toml`](./pixi.toml) and [`pixi.lock`](./pixi.lock). Keep both files committed and push them to your remote repository so other machines can reproduce the same environment.
 
 #### 4. Start the MCP server locally
 
@@ -80,7 +82,14 @@ Check the saved configuration with:
 
 ```bash
 codex mcp list
-codex mcp get word-mcp --json
+codex mcp get word-mcp
+```
+
+If you need to replace an existing configuration, remove it and add it again:
+
+```bash
+codex mcp remove word-mcp
+codex mcp add word-mcp -- pixi run --manifest-path C:/path/to/word-mcp start
 ```
 
 #### 6. Add to Claude Code
@@ -118,11 +127,11 @@ claude mcp add word-mcp --scope user -- pixi run --manifest-path C:/path/to/word
 
 ### Try It Out
 
-Open Claude Code and say:
+Open Codex or Claude Code and say:
 
 > "Open my document at C:/Documents/report.docx and enable tracked changes, then fix the typos"
 
-Claude will open the document, enable tracking, and make edits that appear as tracked changes in Word. Open the file in Word to review and accept/reject.
+The MCP client will open the document, enable tracking, and make edits that appear as tracked changes in Word. Open the file in Word to review and accept/reject.
 
 ## How It Works
 
